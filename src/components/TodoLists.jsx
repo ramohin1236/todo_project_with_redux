@@ -1,11 +1,18 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addTodo, removeTodo, toggleTodo } from "../redux/features/todos/todoSlice";
+import { addTodo, fetchTodos, removeTodo, toggleTodo } from "../redux/features/todos/todoSlice";
 
 const TodoLists = () => {
   const { items, loading, error } = useSelector((state) => state.todos);
+  console.log(items)
   const dispatch = useDispatch();
   const [text, setText] = useState("")
+
+//   fetching data
+   useEffect(()=>{
+           dispatch(fetchTodos())
+   },[dispatch])
+
   if (loading) {
     return <div className="text-2xl font-bold">Loading......</div>;
   }
@@ -50,7 +57,7 @@ const TodoLists = () => {
                 item.complete ? "line-through text-gray-500 cursor-pointer" : "cursor-pointer   "
               }`}
             >
-              {item.text}
+              {item.title}{item.text}
             </span>
             <button
             onClick={()=>dispatch(removeTodo(item.id))}
