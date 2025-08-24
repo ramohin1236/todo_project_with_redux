@@ -1,4 +1,15 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+
+// async thunk to fetch data from api
+
+
+// omit imports and state
+
+export const fetchTodos = createAsyncThunk('todos/fetchTodos', async () => {
+  const response = await fetch("https://jsonplaceholder.typicode.com/todos?_limit=5")
+  const data = await response.json()
+  return data
+})
 
 
 const initialState ={
@@ -28,6 +39,21 @@ export const todoSlice = createSlice({
             todo.complete = !todo.complete;
         }
     }
+  },
+  extraReducers: (builder)=>{
+    builder.addCase(fetchTodos.pending, (state)=>{
+        state.loading= true;
+        state.error = null;
+
+    })
+    builder.addCase(fetchTodos.fulfilled, (state, action)=>{
+        state.loading= false;
+        state.items = action.payload;
+    })
+    builder.addCase(fetchTodos.rejected, (state, action)=>{
+        state.loading= false;
+        state.error= action.error.message;
+    })
   }
 })
 
